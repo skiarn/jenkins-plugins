@@ -20,6 +20,8 @@ func main() {
 	mux.HandleFunc("/ParseAwayJSONP", parse.WithoutJSONP)
 	mux.HandleFunc("/Update", handler.UpdateCache)
 	mux.HandleFunc("/Plugins", handler.Plugins)
+	mux.HandleFunc("/Categories", handler.Categories)
+
 	mux.HandleFunc("/", handler.Index)
 
 	go func() {

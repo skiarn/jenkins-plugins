@@ -47,6 +47,12 @@ func (h *Handler) Plugins(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(plugins)
 }
 
+//Categories returns available Categories available plugins.
+func (h *Handler) Categories(w http.ResponseWriter, r *http.Request) {
+	labels := h.getAllPluginLabels()
+	json.NewEncoder(w).Encode(labels)
+}
+
 func (h *Handler) getAllPlugins() *parse.Plugins {
 	var plugins parse.Plugins
 	keys := h.Cache.GetAll()
@@ -62,6 +68,38 @@ func (h *Handler) getAllPlugins() *parse.Plugins {
 		}
 	}
 	return &plugins
+}
+
+func (h *Handler) getAllPluginLabels() *[]string {
+	var labels []string
+	keys := h.Cache.GetAll()
+	fmt.Printf("Loaded all %v items keys from cache. \n", len(keys))
+	for _, key := range keys {
+		//fmt.Printf("Loading item with key %s from cache. \n", key)
+		var plugin parse.Plugin
+		err := json.Unmarshal(h.Cache.Get(key), &plugin)
+		if err != nil {
+			continue
+		} else {
+			for _, l := range plugin.Labels {
+				if !contains(l, labels) {
+					labels = append(labels, l)
+				}
+			}
+
+		}
+	}
+	return &labels
+}
+
+//Checks if item exist in list.
+func contains(i string, l []string) bool {
+	for _, a := range l {
+		if i == a {
+			return true
+		}
+	}
+	return false
 }
 
 //UpdateCache updates the handler cache with information from external source.

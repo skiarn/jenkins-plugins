@@ -49,6 +49,7 @@ func (p *Plugins) UnmarshalJSON(b []byte) error {
 //Plugin is a jenkins plugin data carrier.
 type Plugin struct {
 	Name             string
+	Labels           []string
 	ReleaseTimeStamp string
 	RequiredCore     string
 	SCM              string
